@@ -1,0 +1,30 @@
+{
+    "@context": "ipfs://QmeJ6fEa4ByMEKyr9DSm8mk6ukm5j2UmpnRtnHyW7HEXdM",
+    "expirationDate": "2024-12-21T10:00:00Z",
+    "id": "urn:uuid:98765432-1234-5678-1234-567812345678",
+    "issuanceDate": "2024-10-01T00:00:00Z",
+    "issuer": {
+        "id": "http://example.airline.com/issuer/5678"
+    },
+    "type": "BoardingPass",
+    "credentialSubject": {
+        "id": "did:example:987654321",
+        "origin": "FRA",
+        "destination": "LHR",
+        "airline": "LH",
+        "flightNumber": 1234,
+        "departure": "2024-12-20T10:00:00Z",
+        "boarding": "2024-12-20T09:35:00Z",
+        "boardingGroup": "B",
+        "seat": "22F",
+        "cabinClass": "Economy"
+    },
+    "credentialSchema": {
+        "id": "https://example.com/schema/BoardingPass",
+        "type": "JsonSchema"
+    },
+    "credentialStatus": {
+        "id": "http://example.airline.com/status/1234",
+        "type": "Active"
+    }
+}

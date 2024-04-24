@@ -1,0 +1,30 @@
+{
+    "@context": "ipfs://QmWzq9jzSKoWkEuJ1GVJuJ8Woy4zg4CcK1nfVC9zNMgNMS",
+    "expirationDate": "2030-12-31T23:59:59Z",
+    "id": "urn:uuid:12345678-9012-3456-7890-123456789012",
+    "issuanceDate": "2020-05-01T00:00:00Z",
+    "issuer": {
+        "id": "http://example.gov/issuer/12345"
+    },
+    "type": "TravelDocument",
+    "credentialSubject": {
+        "id": "did:example:abcdef1234567890",
+        "country": "England",
+        "number": "AB1234567",
+        "firstname": "John",
+        "lastname": "Doe",
+        "dateOfBirth": "1980-01-01",
+        "placeOfBirth": "London, EN",
+        "dateOfIssue": "2020-05-01",
+        "placeOfIssue": "London, EN",
+        "category": "passport"
+    },
+    "credentialSchema": {
+        "id": "https://example.gov/schema/TravelDocument",
+        "type": "JsonSchema"
+    },
+    "credentialStatus": {
+        "id": "http://example.gov/status/12345",
+        "type": "Active"
+    }
+}
