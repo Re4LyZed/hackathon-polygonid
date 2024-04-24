@@ -86,6 +86,7 @@ export async function pollSessions(sessionId: string): Promise<PollSessions> {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
+      authorization: "Basic dXNlci1hcGk6cGFzc3dvcmQtYXBp",
     },
   };
 

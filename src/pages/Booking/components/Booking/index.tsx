@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { QRCode } from "react-qrcode-logo";
+
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+
 import {
   fetchQrCodeLink,
   pollSessions,
 } from "../../../../api/polyon/polygonService";
-import CircularProgress from "@mui/material/CircularProgress";
+import Grid from "@mui/material/Grid";
 
 interface MyQrCodeProps {
   // setSessionId: React.Dispatch<React.SetStateAction<string>>;
@@ -29,35 +33,62 @@ export default function MyQrCode({ setUserId }: MyQrCodeProps) {
   useEffect(() => {
     setTimeout(() => {
       fetchSession();
-    }, 10000);
+    }, 1000);
   }, []);
 
   useEffect(() => {
+    let pollUser: ReturnType<typeof setInterval>;
+
     if (sessionId) {
-      const fetchUser = async () => {
+      pollUser = setInterval(async () => {
         try {
           const userResponse = await pollSessions(sessionId);
 
-          setUserId(userResponse.connection.userID);
-          clearInterval(pollUser);
+          if (userResponse.connection.userID) {
+            setUserId(userResponse.connection.userID);
+            clearInterval(pollUser); // Clear the interval
+          }
         } catch (error) {
           console.log(error);
         }
-      };
-
-      const pollUser = setInterval(async () => {
-        fetchUser();
       }, 5000);
     }
+
+    return () => {
+      clearInterval(pollUser); // Clean up the interval on component unmount
+    };
   }, [sessionId, setUserId]);
 
   return (
-    <>
-      {qrCodeLink ? (
-        <QRCode value={qrCodeLink}></QRCode>
-      ) : (
-        <CircularProgress color="secondary" />
-      )}
-    </>
+    <Box
+      p={4}
+      borderRadius={3}
+      sx={{ backgroundColor: "#ffffff" }}
+      height={300}
+      width={300}
+    >
+      <Grid
+        container
+        gap={1}
+        direction="column"
+        justifyContent="center"
+        alignItems="center"
+        height="100%"
+      >
+        {qrCodeLink ? (
+          <>
+            <Grid item>
+              <QRCode value={qrCodeLink} eyeRadius={5} qrStyle="dots"></QRCode>
+            </Grid>
+          </>
+        ) : (
+          <>
+            <Grid item>
+              <CircularProgress color="secondary" size={150} />
+            </Grid>
+          </>
+        )}
+      </Grid>
+    </Box>
   );
 }
