@@ -50,8 +50,6 @@ interface QrCodeResponse {
 }
 
 export async function fetchQrCodeLink(): Promise<QrCodeResponse> {
-  const apiUrlCredential = `http://localhost:3002/v1/authentication/qrcode`;
-
   const fetchOptions = {
     method: "GET",
     headers: {
@@ -59,7 +57,10 @@ export async function fetchQrCodeLink(): Promise<QrCodeResponse> {
     },
   };
 
-  const response = await fetch(apiUrlCredential, fetchOptions);
+  const response = await fetch(
+    `http://localhost:3002/v1/authentication/qrcode`,
+    fetchOptions
+  );
 
   if (response.status >= 400) {
     console.log(response.json());
@@ -80,8 +81,6 @@ interface PollSessions {
 }
 
 export async function pollSessions(sessionId: string): Promise<PollSessions> {
-  const apiUrlCredential = `http://localhost:3002/v1/authentication/sessions/${sessionId}`;
-
   const fetchOptions = {
     method: "GET",
     headers: {
@@ -90,7 +89,10 @@ export async function pollSessions(sessionId: string): Promise<PollSessions> {
     },
   };
 
-  const response = await fetch(apiUrlCredential, fetchOptions);
+  const response = await fetch(
+    `http://localhost:3002/v1/authentication/sessions/${sessionId}`,
+    fetchOptions
+  );
 
   if (response.status >= 400) {
     console.log(response.json());
@@ -98,4 +100,63 @@ export async function pollSessions(sessionId: string): Promise<PollSessions> {
   }
 
   return response.json() as Promise<PollSessions>;
+}
+
+interface BookHotelRequest {
+  "@context": string;
+  expirationDate: string;
+  id: string;
+  issuanceDate: string;
+  issuer: {
+    id: string;
+  };
+  type: "HotelCheckIn";
+  credentialSubject: {
+    id: string;
+    hotel: {
+      name: string;
+      checkIn: string;
+      checkOut: string;
+      roomCode: string;
+    };
+  };
+  credentialSchema: {
+    id: "https://example.org/schema/HotelCheckIn";
+    type: "JsonSchema";
+  };
+  credentialStatus: {
+    id: "http://example.org/status/1234";
+    type: "Active" | "Inactive";
+  };
+}
+
+interface BookHotelProps {
+  data: BookHotelRequest;
+}
+
+interface BookHotelResponse {}
+
+export async function bookHotel({
+  data,
+}: BookHotelProps): Promise<BookHotelResponse> {
+  const fetchOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: "Basic dXNlci1hcGk6cGFzc3dvcmQtYXBp",
+    },
+    body: JSON.stringify(data),
+  };
+
+  const response = await fetch(
+    `http://localhost:3002/v1/credentials`,
+    fetchOptions
+  );
+
+  if (response.status >= 400) {
+    console.log(response.json());
+    throw new Error(`[ERROR CODE] ${response.status}`);
+  }
+
+  return response.json() as Promise<BookHotelResponse>;
 }

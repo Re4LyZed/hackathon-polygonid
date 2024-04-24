@@ -10,12 +10,11 @@ import {
 } from "../../../../api/polyon/polygonService";
 import Grid from "@mui/material/Grid";
 
-interface MyQrCodeProps {
-  // setSessionId: React.Dispatch<React.SetStateAction<string>>;
+interface AuthenticateUserProps {
   setUserId: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function MyQrCode({ setUserId }: MyQrCodeProps) {
+export default function AuthenticateUser({ setUserId }: AuthenticateUserProps) {
   const [qrCodeLink, setQrCodeLink] = useState<string>("");
   const [sessionId, setSessionId] = useState<string>("");
 

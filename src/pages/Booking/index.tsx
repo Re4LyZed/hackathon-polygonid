@@ -1,7 +1,8 @@
 import { useState } from "react";
 
 import { Box, Grid, Toolbar, Typography } from "@mui/material";
-import MyQrCode from "./components/Booking";
+import AuthenticateUser from "./components/AuthenticateUser";
+import BookHotel from "./components/BookHotel";
 
 export default function Booking() {
   const [userId, setUserId] = useState<string>("");
@@ -20,7 +21,11 @@ export default function Booking() {
 
       <Grid container justifyContent="center" alignItems="center" height="90%">
         <Grid item>
-          {!userId ? <MyQrCode setUserId={setUserId} /> : <>helo</>}
+          {!userId ? (
+            <AuthenticateUser setUserId={setUserId} />
+          ) : (
+            <BookHotel userId={userId} />
+          )}
         </Grid>
       </Grid>
     </Box>
