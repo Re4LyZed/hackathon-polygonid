@@ -1,5 +1,6 @@
-import { Container } from "@mui/material";
+import { QRCode } from 'react-qrcode-logo';
+
 
 export default function Credential() {
-  return <Container>asdf hasjdhfgsahjl</Container>;
+  return  <QRCode value="https://github.com/gcoro/react-qrcode-logo" />;
 }
