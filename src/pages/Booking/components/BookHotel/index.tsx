@@ -1,18 +1,54 @@
-import { Button, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { Button, MenuItem, TextField, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import { DatePicker } from "@mui/x-date-pickers";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { useState } from "react";
+import { bookHotel } from "../../../../api/polyon/polygonService";
+import { useSnackbar } from "notistack";
+import { BookHotelRequest, initBookHotel, PolygonIdMetadata } from "./utils";
 
 interface BookHotelProps {
   userId: string;
+  setUserId: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function BookHotel({ userId }: BookHotelProps) {
-  const [startDate, setStartDate] = useState<Dayjs | null>(dayjs());
-  const [endDate, setEndDate] = useState<Dayjs | null>(dayjs().add(7, "days"));
+export default function BookHotel({ userId, setUserId }: BookHotelProps) {
+  const { enqueueSnackbar } = useSnackbar();
+
+  const [startDate, setStartDate] = useState<string>(dayjs().toISOString());
+  const [endDate, setEndDate] = useState<string>(
+    dayjs().add(7, "days").toISOString()
+  );
   const [location, setLocation] = useState<string>("");
+
+  const handleSubmit = async () => {
+    const bookingData: PolygonIdMetadata<BookHotelRequest> = {
+      ...initBookHotel,
+      credentialSubject: {
+        id: userId,
+        hotelName: "hi",
+        checkIn: startDate,
+        checkOut: endDate,
+        supplierNumber: 21,
+        supplierProductNumber: 23,
+        supplierProductType: "hi",
+      },
+
+      expiration: endDate,
+    };
+
+    try {
+      const response = await bookHotel({ data: bookingData });
+
+      if (response) {
+        enqueueSnackbar("booking success", { variant: "success" });
+        setUserId("");
+      }
+    } catch (error) {
+      enqueueSnackbar(error as string, { variant: "error" });
+    }
+  };
 
   return (
     <Box p={4} borderRadius={3} height={600} width={900}>
@@ -30,6 +66,7 @@ export default function BookHotel({ userId }: BookHotelProps) {
           direction="row"
           width="100%"
           alignItems="center"
+          justifyContent="space-between"
         >
           <Grid item xs={3}>
             <TextField
@@ -46,15 +83,19 @@ export default function BookHotel({ userId }: BookHotelProps) {
 
           <Grid item>
             <DatePicker
-              value={startDate}
-              onChange={(newValue) => setStartDate(newValue)}
+              value={dayjs(startDate)}
+              onChange={(newValue) =>
+                setStartDate(newValue?.toISOString() ?? "")
+              }
+              format="DD-MM-YYYY"
             />
           </Grid>
 
           <Grid item>
             <DatePicker
-              value={endDate}
-              onChange={(newValue) => setEndDate(newValue)}
+              value={dayjs(endDate)}
+              onChange={(newValue) => setEndDate(newValue?.toISOString() ?? "")}
+              format="DD-MM-YYYY"
             />
           </Grid>
 
@@ -66,10 +107,16 @@ export default function BookHotel({ userId }: BookHotelProps) {
         </Grid>
       </Grid>
 
-      <Grid item>
-        <Typography variant="h6" component="h6">
-          {userId}
-        </Typography>
+      <Grid container item justifyContent="space-between" alignItems="center">
+        <Grid item>
+          <Typography px={4}>{userId}</Typography>
+        </Grid>
+
+        <Grid item>
+          <Button variant="outlined" size="large" onClick={handleSubmit}>
+            Book
+          </Button>
+        </Grid>
       </Grid>
     </Box>
   );

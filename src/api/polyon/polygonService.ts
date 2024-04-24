@@ -1,3 +1,8 @@
+import {
+  BookHotelRequest,
+  PolygonIdMetadata,
+} from "../../pages/Booking/components/BookHotel/utils";
+
 const apiUrl = import.meta.env.POLYGON_API_URL + `/credentials`;
 const apiUser = import.meta.env.POLYGON_API_USER;
 const apiPassword = import.meta.env.POLYGON_API_PASSWORD;
@@ -102,36 +107,8 @@ export async function pollSessions(sessionId: string): Promise<PollSessions> {
   return response.json() as Promise<PollSessions>;
 }
 
-interface BookHotelRequest {
-  "@context": string;
-  expirationDate: string;
-  id: string;
-  issuanceDate: string;
-  issuer: {
-    id: string;
-  };
-  type: "HotelCheckIn";
-  credentialSubject: {
-    id: string;
-    hotel: {
-      name: string;
-      checkIn: string;
-      checkOut: string;
-      roomCode: string;
-    };
-  };
-  credentialSchema: {
-    id: "https://example.org/schema/HotelCheckIn";
-    type: "JsonSchema";
-  };
-  credentialStatus: {
-    id: "http://example.org/status/1234";
-    type: "Active" | "Inactive";
-  };
-}
-
 interface BookHotelProps {
-  data: BookHotelRequest;
+  data: PolygonIdMetadata<BookHotelRequest>;
 }
 
 interface BookHotelResponse {}

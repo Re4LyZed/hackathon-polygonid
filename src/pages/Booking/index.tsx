@@ -24,7 +24,7 @@ export default function Booking() {
           {!userId ? (
             <AuthenticateUser setUserId={setUserId} />
           ) : (
-            <BookHotel userId={userId} />
+            <BookHotel userId={userId} setUserId={setUserId} />
           )}
         </Grid>
       </Grid>

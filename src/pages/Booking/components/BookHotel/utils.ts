@@ -1,36 +1,38 @@
+// import { Dayjs } from "dayjs";
+
 export interface BookHotelRequest {
   id: string;
-  hotel: {
-    name: string;
-    hotelId: string;
-    checkIn: string;
-    checkOut: string;
-    roomCode: string;
-  };
+  hotelName: string;
+  checkIn: string;
+  checkOut: string;
+  supplierNumber: number;
+  supplierProductNumber: number;
+  supplierProductType: string;
 }
 
 export interface PolygonIdMetadata<TData extends object> {
-  credentialSchema: "ipfs://QmNfMjBi7sci5QUbntS6i4fu2FLam7wT72vQCcgas5eqeh";
+  credentialSchema: string;
   type: "hotelCredential";
   credentialSubject: TData;
-  expiration: "";
+  expiration: string;
   signatureProof: true;
   mtProof: false;
 }
 
 export const initBookHotel: PolygonIdMetadata<BookHotelRequest> = {
-  credentialSchema: "ipfs://QmNfMjBi7sci5QUbntS6i4fu2FLam7wT72vQCcgas5eqeh",
+  credentialSchema: "ipfs://QmeVbbyKXgFtFgfrWuocuEXzYLzacdKDeb2J3xs4XYjDhX",
   type: "hotelCredential",
+
   credentialSubject: {
     id: "",
-    hotel: {
-      name: "",
-      hotelId: "",
-      checkIn: "",
-      checkOut: "",
-      roomCode: "",
-    },
+    hotelName: "",
+    checkIn: "",
+    checkOut: "",
+    supplierNumber: 0,
+    supplierProductNumber: 0,
+    supplierProductType: "",
   },
+
   expiration: "",
   signatureProof: true,
   mtProof: false,
