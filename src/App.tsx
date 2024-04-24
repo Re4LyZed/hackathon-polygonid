@@ -4,7 +4,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { SnackbarProvider } from "notistack";
 
 import Booking from "./pages/Booking";
-import Credential from "./pages/Credential";
+import Verify from "./pages/Verify";
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -25,7 +25,7 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Booking />} />
-              <Route path="/credential" element={<Credential />} />
+              <Route path="/verify" element={<Verify />} />
             </Routes>
           </BrowserRouter>
         </SnackbarProvider>
