@@ -1,18 +1,46 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "notistack";
 
 import { QRCode } from "react-qrcode-logo";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { MenuItem, TextField } from "@mui/material";
-import { useState } from "react";
+import MenuItem from "@mui/material/MenuItem";
+import TextField from "@mui/material/TextField";
+import CircularProgress from "@mui/material/CircularProgress";
+
+import { VerifyCredential } from "./utils/data";
+import { initBookingVerify } from "./utils/utils";
 
 type BookingType = "booking" | "passport";
 
 export default function Verify() {
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+
   const [verifyType, setVerifyType] = useState<BookingType>("booking");
+  const [qrCodeLink, setQrCodeLink] = useState<string>("");
+
+  const dataFormat = {
+    booking: initBookingVerify,
+    passport: initBookingVerify,
+  };
+
+  const fetchQrCodeUrl = async () => {
+    try {
+      const response = await VerifyCredential(dataFormat[verifyType]);
+
+      setQrCodeLink(response.qrCode);
+    } catch (error) {
+      enqueueSnackbar(`${error}`, { variant: "error" });
+    }
+  };
+
+  useEffect(() => {
+    fetchQrCodeUrl();
+  });
 
   return (
     <Box width="100vw" height="100vh">
@@ -67,11 +95,23 @@ export default function Verify() {
               height="100%"
             >
               <Grid item>
-                <QRCode
-                  value="https://github.com/gcoro/react-qrcode-logo"
-                  eyeRadius={5}
-                  qrStyle="dots"
-                />
+                {qrCodeLink ? (
+                  <>
+                    <Grid item>
+                      <QRCode
+                        value={qrCodeLink}
+                        eyeRadius={5}
+                        qrStyle="dots"
+                      ></QRCode>
+                    </Grid>
+                  </>
+                ) : (
+                  <>
+                    <Grid item>
+                      <CircularProgress color="secondary" size={150} />
+                    </Grid>
+                  </>
+                )}
               </Grid>
             </Grid>
           </Box>

@@ -4,9 +4,13 @@ import Grid from "@mui/material/Grid";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { bookHotel } from "../../../../api/polyon/polygonService";
+import { bookHotel } from "../utils/data";
 import { useSnackbar } from "notistack";
-import { BookHotelRequest, initBookHotel, PolygonIdMetadata } from "./utils";
+import {
+  BookHotelRequest,
+  initBookHotel,
+  PolygonIdMetadata,
+} from "../utils/interfaces";
 
 interface BookHotelProps {
   userId: string;
@@ -46,7 +50,7 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
         setUserId("");
       }
     } catch (error) {
-      enqueueSnackbar(error as string, { variant: "error" });
+      enqueueSnackbar(`${error}`, { variant: "error" });
     }
   };
 

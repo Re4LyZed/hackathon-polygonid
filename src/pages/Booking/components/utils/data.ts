@@ -1,7 +1,4 @@
-import {
-  BookHotelRequest,
-  PolygonIdMetadata,
-} from "../../pages/Booking/components/BookHotel/utils";
+import { BookHotelRequest, PolygonIdMetadata } from "./interfaces";
 
 const apiUrl = import.meta.env.POLYGON_API_URL + `/credentials`;
 const apiUser = import.meta.env.POLYGON_API_USER;
@@ -69,7 +66,7 @@ export async function fetchQrCodeLink(): Promise<QrCodeResponse> {
 
   if (response.status >= 400) {
     console.log(response.json());
-    throw new Error(`[ERROR CODE] ${response.status}`);
+    throw new Error(`[RESPONSE CODE] ${response.status}`);
   }
 
   return response.json() as Promise<QrCodeResponse>;
@@ -101,7 +98,7 @@ export async function pollSessions(sessionId: string): Promise<PollSessions> {
 
   if (response.status >= 400) {
     console.log(response.json());
-    throw new Error(`[ERROR CODE] ${response.status}`);
+    throw new Error(`[RESPONSE CODE] ${response.status}`);
   }
 
   return response.json() as Promise<PollSessions>;
@@ -132,7 +129,7 @@ export async function bookHotel({
 
   if (response.status >= 400) {
     console.log(response.json());
-    throw new Error(`[ERROR CODE] ${response.status}`);
+    throw new Error(`[RESPONSE CODE] ${response.status}`);
   }
 
   return response.json() as Promise<BookHotelResponse>;

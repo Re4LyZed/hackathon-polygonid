@@ -4,10 +4,7 @@ import { QRCode } from "react-qrcode-logo";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 
-import {
-  fetchQrCodeLink,
-  pollSessions,
-} from "../../../../api/polyon/polygonService";
+import { fetchQrCodeLink, pollSessions } from "../utils/data";
 import Grid from "@mui/material/Grid";
 
 interface AuthenticateUserProps {

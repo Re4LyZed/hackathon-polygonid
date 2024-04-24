@@ -1,4 +1,21 @@
-export const initBookingVerify = {
+export interface BookingVerifyScope {
+  circuitID: string;
+  id: number;
+  query: {
+    context: string;
+    allowedIssuers: ["*"];
+    type: string;
+    credentialSubject?: { name: object } | { lastName: object };
+  };
+}
+
+export interface BookingVerify {
+  chainID: "501";
+  skipClaimRevocationCheck: false;
+  scope: BookingVerifyScope[];
+}
+
+export const initBookingVerify: BookingVerify = {
   chainID: "501",
   skipClaimRevocationCheck: false,
   scope: [
@@ -9,13 +26,9 @@ export const initBookingVerify = {
         context: "ipfs://QmdgQkLPYY3MBTq7fYs5hRpc7ccMQpf1W4mwbS86LdUy9z",
         allowedIssuers: ["*"],
         type: "",
-        credentialSubject: {
-          birthday: {
-            $lt: 20201010,
-          },
-        },
       },
     },
+
     {
       circuitID: "credentialAtomicQueryV3-beta.1",
       id: 2,
@@ -36,13 +49,9 @@ export const initBookingVerify = {
         context: "ipfs://QmdgQkLPYY3MBTq7fYs5hRpc7ccMQpf1W4mwbS86LdUy9z",
         allowedIssuers: ["*"],
         type: "",
-        credentialSubject: {
-          birthday: {
-            $lt: 20201010,
-          },
-        },
       },
     },
+
     {
       circuitID: "credentialAtomicQueryV3-beta.1",
       id: 2,
@@ -51,7 +60,7 @@ export const initBookingVerify = {
         allowedIssuers: ["*"],
         type: "TestInteger01",
         credentialSubject: {
-          lastname: {},
+          lastName: {},
         },
       },
     },
