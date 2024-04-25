@@ -5,7 +5,7 @@ export interface BookingVerifyScope {
     context: string;
     allowedIssuers: ["*"];
     type: string;
-    credentialSubject?: { name: object } | { lastName: object };
+    credentialSubject?: object;
   };
 }
 
@@ -23,45 +23,51 @@ export const initBookingVerify: BookingVerify = {
       circuitID: "credentialAtomicQueryV3-beta.1",
       id: 1,
       query: {
-        context: "ipfs://QmdgQkLPYY3MBTq7fYs5hRpc7ccMQpf1W4mwbS86LdUy9z",
+        context: "ipfs://QmaJ6bNRJUX2KU2W2QNXVqBSPUtGFn7tFayVvBTEHUsiHD",
         allowedIssuers: ["*"],
-        type: "",
+        type: "ZKKYC",
+        credentialSubject: {
+          GivenNames: {},
+        },
       },
     },
-
     {
       circuitID: "credentialAtomicQueryV3-beta.1",
       id: 2,
       query: {
-        context: "ipfs://QmaBJzpoYT2CViDx5ShJiuYLKXizrPEfXo8JqzrXCvG6oc",
+        context: "ipfs://QmaJ6bNRJUX2KU2W2QNXVqBSPUtGFn7tFayVvBTEHUsiHD",
         allowedIssuers: ["*"],
-        type: "TestInteger01",
+        type: "ZKKYC",
         credentialSubject: {
-          name: {},
+          Surname: {},
         },
       },
     },
+    {
+      circuitID: "credentialAtomicQueryV3-beta.1",
+      id: 3,
+      query: {
+        context: "ipfs://QmdgQkLPYY3MBTq7fYs5hRpc7ccMQpf1W4mwbS86LdUy9z",
+        allowedIssuers: ["*"],
+        type: "hotelCredential",
+        credentialSubject: {},
+      },
+    },
+  ],
+};
 
+export const initPassportVerify: BookingVerify = {
+  chainID: "501",
+  skipClaimRevocationCheck: false,
+  scope: [
     {
       circuitID: "credentialAtomicQueryV3-beta.1",
       id: 1,
       query: {
-        context: "ipfs://QmdgQkLPYY3MBTq7fYs5hRpc7ccMQpf1W4mwbS86LdUy9z",
+        context: "ipfs://QmaJ6bNRJUX2KU2W2QNXVqBSPUtGFn7tFayVvBTEHUsiHD",
         allowedIssuers: ["*"],
-        type: "",
-      },
-    },
-
-    {
-      circuitID: "credentialAtomicQueryV3-beta.1",
-      id: 2,
-      query: {
-        context: "ipfs://QmaBJzpoYT2CViDx5ShJiuYLKXizrPEfXo8JqzrXCvG6oc",
-        allowedIssuers: ["*"],
-        type: "TestInteger01",
-        credentialSubject: {
-          lastName: {},
-        },
+        type: "ZKKYC",
+        credentialSubject: {},
       },
     },
   ],

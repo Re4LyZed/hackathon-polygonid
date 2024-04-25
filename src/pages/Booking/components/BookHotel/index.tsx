@@ -15,9 +15,12 @@ import { bookHotel, requestMts } from "../utils/data";
 import {
   BookHotelRequest,
   initBookHotel,
+  initproduct,
   PolygonIdMetadata,
+  Product,
 } from "../utils/interfaces";
 import { CaminoMessengerService } from "../utils/messenger";
+import ResultCard from "./components/ResultCart";
 
 interface BookHotelProps {
   userId: string;
@@ -32,22 +35,28 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
     dayjs().add(7, "days").toISOString()
   );
 
-  const [supplier, setSupplier] = useState<string>(
-    "t-kopernikus14e2psc7uxz83fhrmfh52aynfh96vaacq2s92u0"
-  );
+  const [products, setProducts] = useState<Product[]>(initproduct);
 
-  // const [location, setLocation] = useState<number>();
+  const handleSubmit = async ({
+    sDate,
+    eDate,
+    productCode,
+  }: {
+    sDate: string;
+    eDate: string;
+    productCode: number;
+  }) => {
+    console.log(sDate, eDate, productCode);
 
-  const handleSubmit = async () => {
     const bookingData: PolygonIdMetadata<BookHotelRequest> = {
       ...initBookHotel,
       credentialSubject: {
         id: userId,
         hotelName: "hi",
-        checkIn: startDate,
-        checkOut: endDate,
+        checkIn: sDate,
+        checkOut: eDate,
         supplierNumber: 21,
-        supplierProductNumber: 23,
+        supplierProductNumber: productCode,
         supplierProductType: "hi",
       },
 
@@ -66,23 +75,33 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
     }
   };
 
-  const caminoMessenger = new CaminoMessengerService();
+  // const caminoMessenger = new CaminoMessengerService();
 
-  const searchAvalibility = async () => {
-    try {
-      const respose = await caminoMessenger.accomodationSearch({
-        startDate: startDate,
-        endDate: endDate,
-        supplier: supplier,
-      });
+  // const searchAvalibility = async () => {
+  //   try {
+  //     const respose = await caminoMessenger.accomodationSearch({
+  //       startDate: startDate,
+  //       endDate: endDate,
+  //       supplier: supplier,
+  //     });
+  //   } catch {}
+  // };
 
-      console.log(respose);
-    } catch (error) {
-      console.log(error);
+  // const searchAvalibility = async () => {
+  //   try {
+  //     const respose = await caminoMessenger.accomodationService({
+  //       startDate: startDate,
+  //       endDate: endDate,
+  //       supplier: supplier,
+  //     });
 
-      enqueueSnackbar(`${error}`);
-    }
-  };
+  //     console.log(respose);
+  //   } catch (error) {
+  //     console.log(error);
+
+  //     enqueueSnackbar(`${error}`);
+  //   }
+  // };
 
   return (
     <Box p={4} borderRadius={3} height={600} width={900}>
@@ -103,7 +122,7 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
           justifyContent="space-between"
         >
           <Grid item xs={3}>
-            <TextField
+            {/* <TextField
               select
               fullWidth
               value={supplier}
@@ -115,7 +134,7 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
               <MenuItem value="t-kopernikus1xpglq9kzg8pls6hyuhr39xuerqgxakr9dsp3k2">
                 MTS
               </MenuItem>
-            </TextField>
+            </TextField> */}
           </Grid>
 
           <Grid item>
@@ -142,7 +161,7 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
             <Button
               variant="contained"
               size="large"
-              onClick={() => searchAvalibility()}
+              // onClick={() => searchAvalibility()}
               // onClick={() => getBooking()}
             >
               Search
@@ -151,16 +170,24 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
         </Grid>
       </Grid>
 
-      <Grid container item justifyContent="space-between" alignItems="center">
-        <Grid item>
-          <Typography px={4}>{userId}</Typography>
-        </Grid>
-
-        <Grid item>
-          <Button variant="outlined" size="large" onClick={handleSubmit}>
-            Book
-          </Button>
-        </Grid>
+      <Grid container item alignItems="center" direction="column">
+        {products.length > 0 &&
+          products.map((result) => {
+            return (
+              <ResultCard
+                handleSubmit={(productCode: number) =>
+                  handleSubmit({
+                    productCode,
+                    sDate: startDate,
+                    eDate: endDate,
+                  })
+                }
+                roomNumber={result.unitsList[0].supplierRoomCode}
+                roomName={result.unitsList[0].supplierRoomName}
+                remainingUnits={result.unitsList[0].remainingUnits}
+              />
+            );
+          })}
       </Grid>
     </Box>
   );

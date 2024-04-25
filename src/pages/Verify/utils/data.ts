@@ -12,13 +12,36 @@ export async function VerifyCredential(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      authorization: "Basic dXNlci1hcGk6cGFzc3dvcmQtYXBp",
     },
     body: JSON.stringify(data),
   };
 
   const response = await fetch(
-    `http://localhost:3002/v1/credentials`,
+    `https://verifier-backend.polygonid.me/sign-in`,
+    fetchOptions
+  );
+
+  console.log("me", response.status);
+
+  if (response.status >= 400) {
+    console.log(response.json());
+    throw new Error(`[RESPONSE CODE] ${response.status}`);
+  }
+
+  return response.json() as Promise<VerifyCredentialResponse>;
+}
+
+export async function pollStatus<TData>(sessionId: string) {
+  const fetchOptions = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: "Basic dXNlci1hcGk6cGFzc3dvcmQtYXBp",
+    },
+  };
+
+  const response = await fetch(
+    `https://verifier-backend.polygonid.me/session?sessionID=${sessionId}`,
     fetchOptions
   );
 
@@ -27,5 +50,5 @@ export async function VerifyCredential(
     throw new Error(`[RESPONSE CODE] ${response.status}`);
   }
 
-  return response.json() as Promise<VerifyCredentialResponse>;
+  return response.json() as Promise<TData>;
 }
