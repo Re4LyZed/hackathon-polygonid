@@ -1,17 +1,23 @@
-import { Button, MenuItem, TextField, Typography } from "@mui/material";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import { DatePicker } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
 import { useState } from "react";
-import { bookHotel } from "../utils/data";
 import { useSnackbar } from "notistack";
+import dayjs from "dayjs";
+
+import { DatePicker } from "@mui/x-date-pickers";
+import Button from "@mui/material/Button";
+import MenuItem from "@mui/material/MenuItem";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
+
+import { bookHotel, requestMts } from "../utils/data";
+
 import {
   BookHotelRequest,
   initBookHotel,
   PolygonIdMetadata,
 } from "../utils/interfaces";
-import { CaminoMessengerService } from "../../../../api/camino/CaminoMessengerService";
+import { CaminoMessengerService } from "../utils/messenger";
 
 interface BookHotelProps {
   userId: string;
@@ -25,9 +31,12 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
   const [endDate, setEndDate] = useState<string>(
     dayjs().add(7, "days").toISOString()
   );
+
   const [supplier, setSupplier] = useState<string>(
     "t-kopernikus14e2psc7uxz83fhrmfh52aynfh96vaacq2s92u0"
   );
+
+  // const [location, setLocation] = useState<number>();
 
   const handleSubmit = async () => {
     const bookingData: PolygonIdMetadata<BookHotelRequest> = {
@@ -61,7 +70,7 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
 
   const searchAvalibility = async () => {
     try {
-      const respose = await caminoMessenger.accommodationSearch({
+      const respose = await caminoMessenger.accomodationService({
         startDate: startDate,
         endDate: endDate,
         supplier: supplier,
@@ -113,7 +122,7 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
             <DatePicker
               value={dayjs(startDate)}
               onChange={(newValue) =>
-                setStartDate(newValue?.toISOString() ?? "")
+                setStartDate(dayjs(newValue)?.format("YYYY-MM-DD") ?? "")
               }
               format="DD-MM-YYYY"
             />
@@ -122,7 +131,9 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
           <Grid item>
             <DatePicker
               value={dayjs(endDate)}
-              onChange={(newValue) => setEndDate(newValue?.toISOString() ?? "")}
+              onChange={(newValue) =>
+                setEndDate(dayjs(newValue)?.format("YYYY-MM-DD") ?? "")
+              }
               format="DD-MM-YYYY"
             />
           </Grid>
@@ -132,6 +143,7 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
               variant="contained"
               size="large"
               onClick={() => searchAvalibility()}
+              // onClick={() => getBooking()}
             >
               Search
             </Button>

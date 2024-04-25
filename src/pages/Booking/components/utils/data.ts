@@ -1,5 +1,17 @@
 import { BookHotelRequest, PolygonIdMetadata } from "./interfaces";
 
+import { AccommodationSearchServicePromiseClient } from "@buf/chain4travel_camino-messenger-protocol.grpc_web/cmp/services/accommodation/v1alpha/search_grpc_web_pb";
+import { AccommodationSearchRequest } from "@buf/chain4travel_camino-messenger-protocol.grpc_web/cmp/services/accommodation/v1alpha/search_pb";
+import { AccommodationSearchQuery } from "@buf/chain4travel_camino-messenger-protocol.grpc_web/cmp/services/accommodation/v1alpha/search_query_types_pb";
+import { TravelPeriod } from "@buf/chain4travel_camino-messenger-protocol.grpc_web/cmp/types/v1alpha/travel_period_pb";
+import { AccommodationSearchParameters } from "@buf/chain4travel_camino-messenger-protocol.grpc_web/cmp/services/accommodation/v1alpha/search_parameters_types_pb";
+import { Date as ProtoBufDate } from "@buf/chain4travel_camino-messenger-protocol.grpc_web/cmp/types/v1alpha/date_pb";
+import { ProductCode } from "@buf/chain4travel_camino-messenger-protocol.grpc_web/cmp/types/v1alpha/product_code_pb";
+import {
+  BasicTraveller,
+  TravellerType,
+} from "@buf/chain4travel_camino-messenger-protocol.grpc_web/cmp/types/v1alpha/traveller_pb";
+
 const apiUrl = import.meta.env.POLYGON_API_URL + `/credentials`;
 const apiUser = import.meta.env.POLYGON_API_USER;
 const apiPassword = import.meta.env.POLYGON_API_PASSWORD;
@@ -126,6 +138,28 @@ export async function bookHotel({
     `http://localhost:3002/v1/credentials`,
     fetchOptions
   );
+
+  if (response.status >= 400) {
+    console.log(response.json());
+    throw new Error(`[RESPONSE CODE] ${response.status}`);
+  }
+
+  return response.json() as Promise<BookHotelResponse>;
+}
+
+export async function searchHotel({
+  data,
+}: BookHotelProps): Promise<BookHotelResponse> {
+  const fetchOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: "Basic dXNlci1hcGk6cGFzc3dvcmQtYXBp",
+    },
+    body: JSON.stringify(data),
+  };
+
+  const response = await fetch(`http://localhost:9191/`, fetchOptions);
 
   if (response.status >= 400) {
     console.log(response.json());
