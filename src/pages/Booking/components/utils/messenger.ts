@@ -18,10 +18,14 @@ import {
   TravellerType,
 } from "@buf/chain4travel_camino-messenger-protocol.grpc_web/cmp/types/v1alpha/traveller_pb";
 
-export class CaminoMessengerService {
-  private readonly HOSTNAME = "https://cm-distributor.camino.network/";
+export enum Supplier {
+  AVRA = "t-kopernikus14e2psc7uxz83fhrmfh52aynfh96vaacq2s92u0",
+  MTS = "t-kopernikus1xpglq9kzg8pls6hyuhr39xuerqgxakr9dsp3k2",
+}
 
-  public accomodationService({
+export class CaminoMessengerService {
+
+  public accomodationSearch({
     startDate,
     endDate,
     supplier,
@@ -30,46 +34,13 @@ export class CaminoMessengerService {
     endDate: string;
     supplier: string;
   }) {
-    return new Promise((resolve, reject) => {
-      const accommodationService = new AccommodationSearchServiceClient(
-        this.HOSTNAME
-      );
-      const acommodationSearch = new AccommodationSearchRequest();
 
-      const searchParams = new SearchParameters();
-      const filters = new Filter();
-      filters.setFilterCode("GT03-AVAILABILITY");
-      filters.setFilterType(FilterType.FILTER_TYPE_GLOBAL_TYPE);
-      filters.setFilterValue(
-        `ST01-START-DATE=${startDate};ST02-END-DATE=${endDate}`
-      );
-      filters.setFilterDescription("ea");
+    // check the supplier code
+    if (supplier === Supplier.AVRA)
+      return requestAvra({ startDate, endDate });
+    else
+      return requestMts({ startDate, endDate });
 
-      searchParams.setFiltersList([filters]);
-      searchParams.setIncludeCombinations(true);
-      searchParams.setIncludeOnRequest(false);
-      searchParams.setLanguage(Language.LANGUAGE_EN);
-      searchParams.setMaxOptions(3);
-
-      acommodationSearch.setSearchParametersGeneric(searchParams);
-
-      accommodationService.accommodationSearch(
-        acommodationSearch,
-        {
-          recipient: `@${supplier}:matrix.camino.network`,
-        },
-        (err, response) => {
-          console.log("Accommodation-Response: ", response);
-          console.log("Accommodation-Error: ", err);
-
-          if (err) return reject(err);
-
-          const responseJSON = response.toObject();
-          console.log("Accommodation-Response-JSON: ", responseJSON);
-          return resolve(responseJSON);
-        }
-      );
-    });
   }
 }
 
@@ -80,13 +51,45 @@ export function requestAvra({
   startDate: string;
   endDate: string;
 }) {
-  const supplier = "t-kopernikus14e2psc7uxz83fhrmfh52aynfh96vaacq2s92u0";
-  const caminoMessenger = new CaminoMessengerService();
+  return new Promise((resolve, reject) => {
+    const supplier = Supplier.AVRA;
 
-  return caminoMessenger.accomodationService({
-    startDate: startDate,
-    endDate: endDate,
-    supplier: supplier,
+    const accommodationService = new AccommodationSearchServiceClient("https://cm-distributor.camino.network/");
+    const acommodationSearch = new AccommodationSearchRequest();
+
+    const searchParams = new SearchParameters();
+    const filters = new Filter();
+    filters.setFilterCode("GT03-AVAILABILITY");
+    filters.setFilterType(FilterType.FILTER_TYPE_GLOBAL_TYPE);
+    filters.setFilterValue(
+      `ST01-START-DATE=${startDate};ST02-END-DATE=${endDate}`
+    );
+    filters.setFilterDescription("ea");
+
+    searchParams.setFiltersList([filters]);
+    searchParams.setIncludeCombinations(true);
+    searchParams.setIncludeOnRequest(false);
+    searchParams.setLanguage(Language.LANGUAGE_EN);
+    searchParams.setMaxOptions(3);
+
+    acommodationSearch.setSearchParametersGeneric(searchParams);
+
+    accommodationService.accommodationSearch(
+      acommodationSearch,
+      {
+        recipient: `@${supplier}:matrix.camino.network`,
+      },
+      (err, response) => {
+        console.log("Accommodation-Response: ", response);
+        console.log("Accommodation-Error: ", err);
+
+        if (err) return reject(err);
+
+        const responseJSON = response.toObject();
+        console.log("Accommodation-Response-JSON: ", responseJSON);
+        return resolve(responseJSON);
+      }
+    );
   });
 }
 
@@ -108,41 +111,51 @@ export function requestMts({
   startDate: string;
   endDate: string;
 }) {
-  const accService = new AccommodationSearchServicePromiseClient(
-    "https://cm-distributor.camino.network/"
-  );
-  const accRequest = new AccommodationSearchRequest();
-  const accommodationSearchQuery = new AccommodationSearchQuery();
-  const accommodationSearchParameters = new AccommodationSearchParameters();
+  return new Promise((resolve, reject) => {
+    const accService = new AccommodationSearchServiceClient("https://cm-distributor.camino.network/");
+    const accRequest = new AccommodationSearchRequest();
 
-  const productCode = new ProductCode();
-  productCode.setCode("AMTSES0SHW");
-  productCode.setType(0);
+    const accommodationSearchQuery = new AccommodationSearchQuery();
+    const accommodationSearchParameters = new AccommodationSearchParameters();
 
-  accommodationSearchParameters.setProductCodesList([productCode]);
+    const productCode = new ProductCode();
+    productCode.setCode("AMTSES0SHW");
+    productCode.setType(0);
 
-  const travelPeriod = new TravelPeriod();
-  travelPeriod.setStartDate(date(startDate));
-  travelPeriod.setEndDate(date(endDate));
+    accommodationSearchParameters.setProductCodesList([productCode]);
 
-  const traveller = new BasicTraveller();
+    const travelPeriod = new TravelPeriod();
+    travelPeriod.setStartDate(date(startDate));
+    travelPeriod.setEndDate(date(endDate));
 
-  traveller.setType(TravellerType.TRAVELLER_TYPE_ADULT);
-  traveller.setBirthdate(date("1980-10-10"));
+    const traveller = new BasicTraveller();
 
-  accommodationSearchQuery.addTravellers(traveller);
-  accommodationSearchQuery.addTravellers(traveller);
+    traveller.setType(TravellerType.TRAVELLER_TYPE_ADULT);
+    traveller.setBirthdate(date("1980-10-10"));
 
-  accommodationSearchQuery.setTravelPeriod(travelPeriod);
-  accommodationSearchQuery.setSearchParametersAccommodation(
-    accommodationSearchParameters
-  );
+    accommodationSearchQuery.addTravellers(traveller);
+    accommodationSearchQuery.addTravellers(traveller);
 
-  const metadata = {
-    recipient: "T-kopernikus1xpglq9kzg8pls6hyuhr39xuerqgxakr9dsp3k2",
-  };
+    accommodationSearchQuery.setTravelPeriod(travelPeriod);
+    accommodationSearchQuery.setSearchParametersAccommodation(
+      accommodationSearchParameters
+    );
 
-  accRequest.addQueries(accommodationSearchQuery);
+    const metadata = {
+      recipient: `@t-kopernikus1xpglq9kzg8pls6hyuhr39xuerqgxakr9dsp3k2:matrix.camino.network`,
+    };
 
-  return accService.accommodationSearch(accRequest, metadata);
+    accRequest.addQueries(accommodationSearchQuery);
+
+    return accService.accommodationSearch(accRequest, metadata, (err, response) => {
+      console.log("Accommodation-Response: ", response);
+      console.log("Accommodation-Error: ", err);
+
+      if (err) return reject(err);
+
+      const responseJSON = response.toObject();
+      console.log("Accommodation-Response-JSON: ", responseJSON);
+      return resolve(responseJSON);
+    });
+  });
 }

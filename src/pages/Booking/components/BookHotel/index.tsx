@@ -70,7 +70,7 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
 
   const searchAvalibility = async () => {
     try {
-      const respose = await caminoMessenger.accomodationService({
+      const respose = await caminoMessenger.accomodationSearch({
         startDate: startDate,
         endDate: endDate,
         supplier: supplier,
