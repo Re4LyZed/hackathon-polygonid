@@ -11,7 +11,7 @@ export default function Booking() {
   const [userId, setUserId] = useState<string>("");
 
   return (
-    <Box width="100vw" minHeight="100vh">
+    <Box width="100vw" minHeight="100vh" padding={0}>
       <Toolbar sx={{ width: "100%", height: "10%" }}>
         <Grid container width="100%">
           <Grid item>
@@ -27,15 +27,11 @@ export default function Booking() {
         </Grid>
       </Toolbar>
 
-      <Grid container justifyContent="center" alignItems="center" height="90%">
-        <Grid item>
-          {!userId ? (
-            <AuthenticateUser setUserId={setUserId} />
-          ) : (
-            <BookHotel userId={userId} setUserId={setUserId} />
-          )}
-        </Grid>
-      </Grid>
+      {!userId ? (
+        <AuthenticateUser setUserId={setUserId} />
+      ) : (
+        <BookHotel userId={userId} setUserId={setUserId} />
+      )}
     </Box>
   );
 }

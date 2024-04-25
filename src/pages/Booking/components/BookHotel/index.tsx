@@ -40,8 +40,6 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
   const [products, setProducts] = useState<Product[]>([]);
 
   const handleSearch = async () => {
-    console.log(startDate, endDate);
-
     setLoading(true);
     setProducts([]);
     try {
@@ -103,16 +101,22 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
   };
 
   return (
-    <Grid container direction="column" width="100%">
-      <Grid container item gap={1} direction="column" width="100%">
+    <Grid
+      container
+      direction="column"
+      minHeight="90vh"
+      alignItems="center"
+      gap={4}
+    >
+      <Grid container item direction="column" alignItems="center">
         <Grid
           container
           item
-          gap={1}
+          gap={2}
           direction="row"
-          width="100%"
+          width="50%"
           alignItems="center"
-          justifyContent="space-between"
+          justifyContent="center"
         >
           <Grid item xs={3}>
             <TextField
@@ -153,6 +157,7 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
 
           <Grid item>
             <LoadingButton
+              sx={{ minHeight: 50 }}
               variant="contained"
               size="large"
               onClick={() => handleSearch()}
@@ -164,18 +169,11 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
         </Grid>
       </Grid>
 
-      <Grid
-        container
-        item
-        alignItems="center"
-        direction="column"
-        width="100%"
-        gap={1}
-      >
+      <Grid container item alignItems="center" direction="column" gap={1}>
         {products.length > 0 &&
-          products.map((result) => {
+          products.map((result, index) => {
             return (
-              <Grid item>
+              <Grid item key={index}>
                 <ResultCard
                   handleSubmit={(productCode: string) =>
                     handleSubmit({
@@ -184,10 +182,11 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
                       eDate: endDate,
                     })
                   }
+                  index={index}
                   supplierRoomCode={result.unitsList[0].supplierRoomCode}
                   roomName={result.unitsList[0].supplierRoomName}
                   remainingUnits={result.unitsList[0].remainingUnits}
-                />{" "}
+                />
               </Grid>
             );
           })}

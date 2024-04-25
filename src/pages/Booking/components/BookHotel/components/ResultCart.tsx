@@ -4,7 +4,7 @@ interface ResultCardProps {
   handleSubmit: (productCode: string) => Promise<void>;
   supplierRoomCode: string;
   roomName: string;
-  imgUrl?: string;
+  index: number;
   remainingUnits: number;
 }
 
@@ -12,50 +12,71 @@ export default function ResultCard({
   handleSubmit,
   supplierRoomCode,
   roomName,
-  imgUrl = "",
-  remainingUnits,
+  index,
 }: ResultCardProps) {
   return (
-    <Card>
-      <Grid container direction="row" width={700} gap={4} alignItems="center">
-        <Grid item xs={3}>
+    <Card sx={{ borderRadius: 3 }}>
+      <Grid
+        container
+        direction="row"
+        width={900}
+        height={150}
+        gap={3}
+        alignItems="center"
+        justifyContent="space-between"
+        paddingX={2}
+      >
+        <Grid item>
           <Box
             component="img"
             sx={{
-              height: 233,
-              width: 350,
+              height: 120,
+              width: 120,
+              backgroundColor: "#897c8a",
+              borderRadius: 3,
             }}
             alt="no comprende"
-            src={imgUrl}
+            src={`https://source.unsplash.com/random/?Hotel&${index}`}
           />
         </Grid>
 
-        <Grid item container direction="column" xs={1}>
+        <Grid item container direction="column" xs={4}>
           <Grid item>
-            <Typography variant="h4">{roomName}</Typography>
+            <Typography variant="h6">{roomName}</Typography>
           </Grid>
 
           <Grid item>
-            <Typography variant="h6">
-              room number: {supplierRoomCode}
+            <Typography variant="h6">({supplierRoomCode})</Typography>
+          </Grid>
+        </Grid>
+
+        <Grid
+          container
+          item
+          direction="column"
+          justifyContent="space-between"
+          alignItems="flex-end"
+          xs={3}
+          height="100%"
+          padding={1}
+        >
+          <Grid item>
+            <Typography>
+              Remaining units: {Math.floor(Math.random() * 3)}
             </Typography>
           </Grid>
-        </Grid>
 
-        <Grid item xs={3}>
-          <Typography>{remainingUnits}</Typography>
-        </Grid>
-
-        <Grid item xs={3}>
-          <Button
-            variant="outlined"
-            size="large"
-            onClick={() => {
-              handleSubmit(supplierRoomCode);
-            }}
-          >
-            Book
-          </Button>
+          <Grid item>
+            <Button
+              variant="outlined"
+              size="large"
+              onClick={() => {
+                handleSubmit(supplierRoomCode);
+              }}
+            >
+              Book
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
     </Card>
