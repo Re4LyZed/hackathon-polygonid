@@ -23,25 +23,18 @@ export enum Supplier {
   MTS = "t-kopernikus1xpglq9kzg8pls6hyuhr39xuerqgxakr9dsp3k2",
 }
 
-export class CaminoMessengerService {
-
-  public accomodationSearch({
-    startDate,
-    endDate,
-    supplier,
-  }: {
-    startDate: string;
-    endDate: string;
-    supplier: string;
-  }) {
-
-    // check the supplier code
-    if (supplier === Supplier.AVRA)
-      return requestAvra({ startDate, endDate });
-    else
-      return requestMts({ startDate, endDate });
-
-  }
+export function accomodationSearch({
+  startDate,
+  endDate,
+  supplier,
+}: {
+  startDate: string;
+  endDate: string;
+  supplier: string;
+}) {
+  // check the supplier code
+  if (supplier === Supplier.AVRA) return requestAvra({ startDate, endDate });
+  else return requestMts({ startDate, endDate });
 }
 
 export function requestAvra({
@@ -54,7 +47,9 @@ export function requestAvra({
   return new Promise((resolve, reject) => {
     const supplier = Supplier.AVRA;
 
-    const accommodationService = new AccommodationSearchServiceClient("https://cm-distributor.camino.network/");
+    const accommodationService = new AccommodationSearchServiceClient(
+      "https://cm-distributor.camino.network/"
+    );
     const acommodationSearch = new AccommodationSearchRequest();
 
     const searchParams = new SearchParameters();
@@ -112,7 +107,9 @@ export function requestMts({
   endDate: string;
 }) {
   return new Promise((resolve, reject) => {
-    const accService = new AccommodationSearchServiceClient("https://cm-distributor.camino.network/");
+    const accService = new AccommodationSearchServiceClient(
+      "https://cm-distributor.camino.network/"
+    );
     const accRequest = new AccommodationSearchRequest();
 
     const accommodationSearchQuery = new AccommodationSearchQuery();
@@ -147,15 +144,19 @@ export function requestMts({
 
     accRequest.addQueries(accommodationSearchQuery);
 
-    return accService.accommodationSearch(accRequest, metadata, (err, response) => {
-      console.log("Accommodation-Response: ", response);
-      console.log("Accommodation-Error: ", err);
+    return accService.accommodationSearch(
+      accRequest,
+      metadata,
+      (err, response) => {
+        console.log("Accommodation-Response: ", response);
+        console.log("Accommodation-Error: ", err);
 
-      if (err) return reject(err);
+        if (err) return reject(err);
 
-      const responseJSON = response.toObject();
-      console.log("Accommodation-Response-JSON: ", responseJSON);
-      return resolve(responseJSON);
-    });
+        const responseJSON = response.toObject();
+        console.log("Accommodation-Response-JSON: ", responseJSON);
+        return resolve(responseJSON);
+      }
+    );
   });
 }

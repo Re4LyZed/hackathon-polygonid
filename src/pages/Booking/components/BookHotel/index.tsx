@@ -4,23 +4,24 @@ import dayjs from "dayjs";
 
 import { DatePicker } from "@mui/x-date-pickers";
 import Button from "@mui/material/Button";
-import MenuItem from "@mui/material/MenuItem";
-import TextField from "@mui/material/TextField";
+
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+
 import Grid from "@mui/material/Grid";
 
-import { bookHotel, requestMts } from "../utils/data";
+import { bookHotel } from "../utils/data";
 
 import {
   BookHotelRequest,
   initBookHotel,
-  initproduct,
   PolygonIdMetadata,
   Product,
 } from "../utils/interfaces";
-import { CaminoMessengerService } from "../utils/messenger";
+
 import ResultCard from "./components/ResultCart";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
+import { accomodationSearch } from "../utils/messenger";
 
 interface BookHotelProps {
   userId: string;
@@ -35,7 +36,29 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
     dayjs().add(7, "days").toISOString()
   );
 
-  const [products, setProducts] = useState<Product[]>(initproduct);
+  const [supplier, setSupplier] = useState<string>(
+    "t-kopernikus14e2psc7uxz83fhrmfh52aynfh96vaacq2s92u0"
+  );
+
+  const [products, setProducts] = useState<Product[]>([]);
+
+  const handleSearch = async () => {
+    try {
+      const response = await accomodationSearch({
+        startDate: startDate,
+        endDate: endDate,
+        supplier: supplier,
+      });
+
+      if ((response as { resultsList: Product[] }).resultsList?.length > 0) {
+        setProducts((response as { resultsList: Product[] }).resultsList);
+      } else {
+        enqueueSnackbar("no results", { variant: "error" });
+      }
+    } catch {
+      enqueueSnackbar("error fetching results", { variant: "error" });
+    }
+  };
 
   const handleSubmit = async ({
     sDate,
@@ -75,34 +98,6 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
     }
   };
 
-  // const caminoMessenger = new CaminoMessengerService();
-
-  // const searchAvalibility = async () => {
-  //   try {
-  //     const respose = await caminoMessenger.accomodationSearch({
-  //       startDate: startDate,
-  //       endDate: endDate,
-  //       supplier: supplier,
-  //     });
-  //   } catch {}
-  // };
-
-  // const searchAvalibility = async () => {
-  //   try {
-  //     const respose = await caminoMessenger.accomodationService({
-  //       startDate: startDate,
-  //       endDate: endDate,
-  //       supplier: supplier,
-  //     });
-
-  //     console.log(respose);
-  //   } catch (error) {
-  //     console.log(error);
-
-  //     enqueueSnackbar(`${error}`);
-  //   }
-  // };
-
   return (
     <Box p={4} borderRadius={3} height={600} width={900}>
       <Grid
@@ -122,7 +117,7 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
           justifyContent="space-between"
         >
           <Grid item xs={3}>
-            {/* <TextField
+            <TextField
               select
               fullWidth
               value={supplier}
@@ -134,7 +129,7 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
               <MenuItem value="t-kopernikus1xpglq9kzg8pls6hyuhr39xuerqgxakr9dsp3k2">
                 MTS
               </MenuItem>
-            </TextField> */}
+            </TextField>
           </Grid>
 
           <Grid item>
@@ -161,8 +156,7 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
             <Button
               variant="contained"
               size="large"
-              // onClick={() => searchAvalibility()}
-              // onClick={() => getBooking()}
+              onClick={() => handleSearch()}
             >
               Search
             </Button>
