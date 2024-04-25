@@ -5,8 +5,10 @@ import { useSnackbar } from "notistack";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
+import Alert from "@mui/material/Alert";
+import Button from "@mui/material/Button";
 
-import { initBookingVerify } from "../../utils/utils";
+import { initBookingVerify, ValidationResponse } from "../../utils/utils";
 import { pollStatus, VerifyCredential } from "../../utils/data";
 
 export default function ValidateBooking() {
@@ -33,12 +35,7 @@ export default function ValidateBooking() {
   }, []);
 
   const [sessionResponse, setSessionResponse] = useState<
-    | {
-        name: string;
-        lastname: string;
-        supplierProductNumber: number;
-      }
-    | undefined
+    ValidationResponse | undefined
   >();
 
   useEffect(() => {
@@ -47,9 +44,12 @@ export default function ValidateBooking() {
     if (sessionId) {
       pollUser = setInterval(async () => {
         try {
-          const response = await pollStatus(sessionId);
+          const response = await pollStatus<ValidationResponse>(sessionId);
 
-          console.log(response);
+          if (response.status != "pending") {
+            setSessionResponse(response);
+            clearInterval(pollUser);
+          }
         } catch (error) {
           console.log(error);
         }
@@ -57,7 +57,7 @@ export default function ValidateBooking() {
     }
 
     return () => {
-      clearInterval(pollUser); // Clean up the interval on component unmount
+      clearInterval(pollUser);
     };
   }, [sessionId]);
 
@@ -69,35 +69,75 @@ export default function ValidateBooking() {
       justifyContent="center"
       alignItems="center"
       height="100%"
+      width="100%"
     >
       {!sessionResponse ? (
-        qrCodeLink ? (
-          <>
+        <Grid
+          item
+          container
+          p={4}
+          sx={{ backgroundColor: "#ffffff", borderRadius: 3 }}
+        >
+          {qrCodeLink ? (
             <Grid item>
               <QRCode value={qrCodeLink} eyeRadius={5} qrStyle="dots"></QRCode>
             </Grid>
-          </>
-        ) : (
-          <>
-            <Grid item>
-              <CircularProgress color="secondary" size={150} />
-            </Grid>
-          </>
-        )
+          ) : (
+            <>
+              <Grid item>
+                <CircularProgress color="secondary" size={150} />
+              </Grid>
+            </>
+          )}
+        </Grid>
       ) : (
-        <>
-          <Grid item>
-            <Typography>{sessionResponse.name}</Typography>
-          </Grid>
+        <Grid
+          item
+          container
+          direction="column"
+          p={4}
+          sx={{
+            border: `solid 1px ${
+              sessionResponse.status === "success" ? "green" : "red"
+            }`,
+            borderRadius: 3,
 
+            width: 600,
+          }}
+        >
           <Grid item>
-            <Typography>{sessionResponse.lastname}</Typography>
+            <Alert color="success">Credential Verified</Alert>
           </Grid>
-
           <Grid item>
-            <Typography>{sessionResponse.supplierProductNumber}</Typography>
+            <Typography variant="h6" paddingLeft={2}>
+              Welcome
+            </Typography>
+          </Grid>{" "}
+          <Grid item>
+            <Typography variant="h4" paddingLeft={2}>
+              {`
+                ${sessionResponse.jwzMetadata.verifiablePresentations[0].credentialSubject.GivenNames} ${sessionResponse.jwzMetadata.verifiablePresentations[1].credentialSubject.Surname}
+              `}
+            </Typography>
           </Grid>
-        </>
+          <Grid item>{<Typography variant="h4">{}</Typography>}</Grid>
+          <Grid item container justifyContent="flex-end">
+            <Grid item>
+              <Button
+                size="large"
+                variant="outlined"
+                onClick={() => {
+                  setQrCodeLink("");
+                  setSessionId("");
+                  setSessionResponse(undefined);
+                  fetchQrCodeUrl();
+                }}
+              >
+                Clear
+              </Button>
+            </Grid>
+          </Grid>
+        </Grid>
       )}
     </Grid>
   );

@@ -36,12 +36,11 @@ export async function pollStatus<TData>(sessionId: string) {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      authorization: "Basic dXNlci1hcGk6cGFzc3dvcmQtYXBp",
     },
   };
 
   const response = await fetch(
-    `https://verifier-backend.polygonid.me/session?sessionID=${sessionId}`,
+    `https://verifier-backend.polygonid.me/status?sessionID=${sessionId}`,
     fetchOptions
   );
 

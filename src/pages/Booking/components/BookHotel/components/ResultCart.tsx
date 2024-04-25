@@ -17,7 +17,7 @@ export default function ResultCard({
 }: ResultCardProps) {
   return (
     <Card>
-      <Grid container direction="row" width={700} gap={4}>
+      <Grid container direction="row" width={700} gap={4} alignItems="center">
         <Grid item xs={3}>
           <Box
             component="img"
@@ -30,7 +30,7 @@ export default function ResultCard({
           />
         </Grid>
 
-        <Grid item container direction="column" xs={3}>
+        <Grid item container direction="column" xs={1}>
           <Grid item>
             <Typography variant="h4">{roomName}</Typography>
           </Grid>
@@ -46,8 +46,10 @@ export default function ResultCard({
           <Typography>{remainingUnits}</Typography>
         </Grid>
 
-        <Grid item>
+        <Grid item xs={3}>
           <Button
+            variant="outlined"
+            size="large"
             onClick={() => {
               handleSubmit(supplierRoomCode);
             }}

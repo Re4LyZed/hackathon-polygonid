@@ -50,7 +50,11 @@ export const initBookingVerify: BookingVerify = {
         context: "ipfs://QmVvhgzGw6ZNz6RXmzPVnU2Zpee2T7mT6jzLWH8Fqa8npp",
         allowedIssuers: ["*"],
         type: "hotelCredential",
-        credentialSubject: {},
+        credentialSubject: {
+          supplierNumber: {
+            $ne: 0,
+          },
+        },
       },
     },
   ],
@@ -67,8 +71,33 @@ export const initPassportVerify: BookingVerify = {
         context: "ipfs://QmaJ6bNRJUX2KU2W2QNXVqBSPUtGFn7tFayVvBTEHUsiHD",
         allowedIssuers: ["*"],
         type: "ZKKYC",
-        credentialSubject: {},
+        credentialSubject: {
+          GivenNames: {
+            $ne: "empty",
+          },
+        },
       },
     },
   ],
 };
+
+interface validationResponseverifiablePresentations {
+  credentialSubject: {
+    "@type": string;
+    GivenNames: string;
+    Surname: string;
+  };
+  proofType: string;
+  schemaContext: [string, string];
+  schemaType: string[];
+}
+
+export interface ValidationResponse {
+  jwz: string;
+  jwzMetadata: {
+    userDID: "did:polygonid:camino:columbus:3DrCnqwfiacV2DKk7EmAV4X4FQcp3twcUykQh1UrSB";
+    verifiablePresentations: validationResponseverifiablePresentations[];
+  };
+
+  status: "success" | "error" | "pending";
+}

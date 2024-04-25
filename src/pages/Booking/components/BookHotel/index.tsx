@@ -3,12 +3,12 @@ import { useSnackbar } from "notistack";
 import dayjs from "dayjs";
 
 import { DatePicker } from "@mui/x-date-pickers";
-
 import LoadingButton from "@mui/lab/LoadingButton";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
 
-import { bookHotel } from "../utils/data";
+import Grid from "@mui/material/Grid";
+import ResultCard from "./components/ResultCart";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
 
 import {
   BookHotelRequest,
@@ -17,9 +17,8 @@ import {
   Product,
 } from "../utils/interfaces";
 
-import ResultCard from "./components/ResultCart";
-import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
+import { bookHotel } from "../utils/data";
+
 import { accomodationSearch } from "../utils/messenger";
 
 interface BookHotelProps {
@@ -104,8 +103,8 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
   };
 
   return (
-    <Box p={4} borderRadius={3} height={600} width={900}>
-      <Grid container gap={1} direction="column" height="100%">
+    <Grid container direction="column" width="100%">
+      <Grid container item gap={1} direction="column" width="100%">
         <Grid
           container
           item
@@ -165,25 +164,34 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
         </Grid>
       </Grid>
 
-      <Grid container item alignItems="center" direction="column">
+      <Grid
+        container
+        item
+        alignItems="center"
+        direction="column"
+        width="100%"
+        gap={1}
+      >
         {products.length > 0 &&
           products.map((result) => {
             return (
-              <ResultCard
-                handleSubmit={(productCode: string) =>
-                  handleSubmit({
-                    productCode,
-                    sDate: startDate,
-                    eDate: endDate,
-                  })
-                }
-                supplierRoomCode={result.unitsList[0].supplierRoomCode}
-                roomName={result.unitsList[0].supplierRoomName}
-                remainingUnits={result.unitsList[0].remainingUnits}
-              />
+              <Grid item>
+                <ResultCard
+                  handleSubmit={(productCode: string) =>
+                    handleSubmit({
+                      productCode,
+                      sDate: startDate,
+                      eDate: endDate,
+                    })
+                  }
+                  supplierRoomCode={result.unitsList[0].supplierRoomCode}
+                  roomName={result.unitsList[0].supplierRoomName}
+                  remainingUnits={result.unitsList[0].remainingUnits}
+                />{" "}
+              </Grid>
             );
           })}
       </Grid>
-    </Box>
+    </Grid>
   );
 }

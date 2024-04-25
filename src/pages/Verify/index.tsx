@@ -21,7 +21,12 @@ export default function Verify() {
   return (
     <Box width="100vw" height="100vh">
       <Toolbar sx={{ width: "100%", height: "10%" }}>
-        <Grid container width="100%">
+        <Grid
+          container
+          width="100%"
+          alignItems="center"
+          justifyContent="space-between"
+        >
           <Grid item>
             <Typography
               variant="h4"
@@ -32,6 +37,19 @@ export default function Verify() {
               ALREADY LEFT
             </Typography>
           </Grid>
+
+          <Grid item>
+            <TextField
+              sx={{ width: 300 }}
+              select
+              value={verifyType}
+              onChange={(e) => setVerifyType(e.target.value as BookingType)}
+            >
+              <MenuItem value="booking">Booking</MenuItem>
+
+              <MenuItem value="passport">Passport</MenuItem>
+            </TextField>
+          </Grid>
         </Grid>
       </Toolbar>
 
@@ -41,28 +59,9 @@ export default function Verify() {
         alignItems="center"
         height="90%"
         direction="column"
-        gap={1}
       >
         <Grid item>
-          <TextField
-            sx={{ width: 300 }}
-            select
-            value={verifyType}
-            onChange={(e) => setVerifyType(e.target.value as BookingType)}
-          >
-            <MenuItem value="booking">Booking</MenuItem>
-
-            <MenuItem value="passport">Passport</MenuItem>
-          </TextField>
-        </Grid>
-        <Grid item>
-          <Box
-            p={4}
-            borderRadius={3}
-            sx={{ backgroundColor: "#ffffff" }}
-            height={300}
-            width={300}
-          >
+          <Box p={4} borderRadius={3} height={300}>
             <Grid
               container
               direction="column"

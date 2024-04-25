@@ -11,7 +11,7 @@ export default function Booking() {
   const [userId, setUserId] = useState<string>("");
 
   return (
-    <Box width="100vw" height="100vh">
+    <Box width="100vw" minHeight="100vh">
       <Toolbar sx={{ width: "100%", height: "10%" }}>
         <Grid container width="100%">
           <Grid item>
