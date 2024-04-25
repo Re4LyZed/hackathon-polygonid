@@ -11,6 +11,7 @@ import {
   initBookHotel,
   PolygonIdMetadata,
 } from "../utils/interfaces";
+import { CaminoMessengerService } from "../../../../api/camino/CaminoMessengerService";
 
 interface BookHotelProps {
   userId: string;
@@ -24,7 +25,9 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
   const [endDate, setEndDate] = useState<string>(
     dayjs().add(7, "days").toISOString()
   );
-  const [location, setLocation] = useState<string>("");
+  const [supplier, setSupplier] = useState<string>(
+    "t-kopernikus14e2psc7uxz83fhrmfh52aynfh96vaacq2s92u0"
+  );
 
   const handleSubmit = async () => {
     const bookingData: PolygonIdMetadata<BookHotelRequest> = {
@@ -54,6 +57,24 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
     }
   };
 
+  const caminoMessenger = new CaminoMessengerService();
+
+  const searchAvalibility = async () => {
+    try {
+      const respose = await caminoMessenger.accommodationSearch({
+        startDate: startDate,
+        endDate: endDate,
+        supplier: supplier,
+      });
+
+      console.log(respose);
+    } catch (error) {
+      console.log(error);
+
+      enqueueSnackbar(`${error}`);
+    }
+  };
+
   return (
     <Box p={4} borderRadius={3} height={600} width={900}>
       <Grid
@@ -76,12 +97,15 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
             <TextField
               select
               fullWidth
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
+              value={supplier}
+              onChange={(e) => setSupplier(e.target.value)}
             >
-              <MenuItem value="england">England</MenuItem>
-              <MenuItem value="croatia">Croatia</MenuItem>
-              <MenuItem value="germany">Germany</MenuItem>
+              <MenuItem value="t-kopernikus14e2psc7uxz83fhrmfh52aynfh96vaacq2s92u0">
+                AVRA
+              </MenuItem>
+              <MenuItem value="t-kopernikus1xpglq9kzg8pls6hyuhr39xuerqgxakr9dsp3k2">
+                MTS
+              </MenuItem>
             </TextField>
           </Grid>
 
@@ -104,7 +128,11 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
           </Grid>
 
           <Grid item>
-            <Button variant="contained" size="large">
+            <Button
+              variant="contained"
+              size="large"
+              onClick={() => searchAvalibility()}
+            >
               Search
             </Button>
           </Grid>
