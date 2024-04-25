@@ -13,6 +13,7 @@
     "@buf/chain4travel_camino-messenger-protocol.grpc_web": "^1.5.0-20240416134251-eea07d77749c.1",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.15.15",
     "@mui/x-date-pickers": "^7.2.0",
     "dayjs": "^1.11.10",

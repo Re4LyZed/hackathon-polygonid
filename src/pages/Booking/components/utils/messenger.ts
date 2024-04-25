@@ -7,7 +7,6 @@ import {
   FilterType,
 } from "@buf/chain4travel_camino-messenger-protocol.grpc_web/cmp/types/v1alpha/filter_pb";
 
-import { AccommodationSearchServicePromiseClient } from "@buf/chain4travel_camino-messenger-protocol.grpc_web/cmp/services/accommodation/v1alpha/search_grpc_web_pb";
 import { AccommodationSearchQuery } from "@buf/chain4travel_camino-messenger-protocol.grpc_web/cmp/services/accommodation/v1alpha/search_query_types_pb";
 import { TravelPeriod } from "@buf/chain4travel_camino-messenger-protocol.grpc_web/cmp/types/v1alpha/travel_period_pb";
 import { AccommodationSearchParameters } from "@buf/chain4travel_camino-messenger-protocol.grpc_web/cmp/services/accommodation/v1alpha/search_parameters_types_pb";

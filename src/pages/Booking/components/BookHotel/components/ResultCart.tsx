@@ -1,8 +1,8 @@
 import { Box, Button, Card, Grid, Typography } from "@mui/material";
 
 interface ResultCardProps {
-  handleSubmit: (productCode: number) => Promise<void>;
-  roomNumber: string;
+  handleSubmit: (productCode: string) => Promise<void>;
+  supplierRoomCode: string;
   roomName: string;
   imgUrl?: string;
   remainingUnits: number;
@@ -10,7 +10,7 @@ interface ResultCardProps {
 
 export default function ResultCard({
   handleSubmit,
-  roomNumber,
+  supplierRoomCode,
   roomName,
   imgUrl = "",
   remainingUnits,
@@ -36,7 +36,9 @@ export default function ResultCard({
           </Grid>
 
           <Grid item>
-            <Typography variant="h6">room number: {roomNumber}</Typography>
+            <Typography variant="h6">
+              room number: {supplierRoomCode}
+            </Typography>
           </Grid>
         </Grid>
 
@@ -45,7 +47,11 @@ export default function ResultCard({
         </Grid>
 
         <Grid item>
-          <Button onClick={() => handleSubmit(parseInt(roomNumber))}>
+          <Button
+            onClick={() => {
+              handleSubmit(supplierRoomCode);
+            }}
+          >
             Book
           </Button>
         </Grid>

@@ -6,7 +6,7 @@ export interface BookHotelRequest {
   checkIn: string;
   checkOut: string;
   supplierNumber: number;
-  supplierProductNumber: number;
+  supplierProductCode: string;
   supplierProductType: string;
 }
 
@@ -20,7 +20,7 @@ export interface PolygonIdMetadata<TData extends object> {
 }
 
 export const initBookHotel: PolygonIdMetadata<BookHotelRequest> = {
-  credentialSchema: "ipfs://QmeVbbyKXgFtFgfrWuocuEXzYLzacdKDeb2J3xs4XYjDhX",
+  credentialSchema: "ipfs://QmZWPajqhcD964ai3joVEEuS4uvbzYsRzL5te1Uky63qJe",
   type: "hotelCredential",
 
   credentialSubject: {
@@ -29,7 +29,7 @@ export const initBookHotel: PolygonIdMetadata<BookHotelRequest> = {
     checkIn: "",
     checkOut: "",
     supplierNumber: 0,
-    supplierProductNumber: 0,
+    supplierProductCode: "",
     supplierProductType: "",
   },
 

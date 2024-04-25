@@ -47,7 +47,7 @@ export const initBookingVerify: BookingVerify = {
       circuitID: "credentialAtomicQueryV3-beta.1",
       id: 3,
       query: {
-        context: "ipfs://QmdgQkLPYY3MBTq7fYs5hRpc7ccMQpf1W4mwbS86LdUy9z",
+        context: "ipfs://QmVvhgzGw6ZNz6RXmzPVnU2Zpee2T7mT6jzLWH8Fqa8npp",
         allowedIssuers: ["*"],
         type: "hotelCredential",
         credentialSubject: {},

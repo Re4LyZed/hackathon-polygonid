@@ -3,10 +3,9 @@ import { useSnackbar } from "notistack";
 import dayjs from "dayjs";
 
 import { DatePicker } from "@mui/x-date-pickers";
-import Button from "@mui/material/Button";
 
+import LoadingButton from "@mui/lab/LoadingButton";
 import Box from "@mui/material/Box";
-
 import Grid from "@mui/material/Grid";
 
 import { bookHotel } from "../utils/data";
@@ -31,18 +30,21 @@ interface BookHotelProps {
 export default function BookHotel({ userId, setUserId }: BookHotelProps) {
   const { enqueueSnackbar } = useSnackbar();
 
-  const [startDate, setStartDate] = useState<string>(dayjs().toISOString());
-  const [endDate, setEndDate] = useState<string>(
-    dayjs().add(7, "days").toISOString()
-  );
+  const [startDate, setStartDate] = useState<string>("11-11-2024");
+  const [endDate, setEndDate] = useState<string>("11-18-2024");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [supplier, setSupplier] = useState<string>(
-    "t-kopernikus14e2psc7uxz83fhrmfh52aynfh96vaacq2s92u0"
+    "t-kopernikus1xpglq9kzg8pls6hyuhr39xuerqgxakr9dsp3k2"
   );
 
   const [products, setProducts] = useState<Product[]>([]);
 
   const handleSearch = async () => {
+    console.log(startDate, endDate);
+
+    setLoading(true);
+    setProducts([]);
     try {
       const response = await accomodationSearch({
         startDate: startDate,
@@ -55,10 +57,14 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
       } else {
         enqueueSnackbar("no results", { variant: "error" });
       }
+      setLoading(false);
     } catch {
       enqueueSnackbar("error fetching results", { variant: "error" });
+      setLoading(false);
     }
   };
+
+  console.log(products);
 
   const handleSubmit = async ({
     sDate,
@@ -67,23 +73,22 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
   }: {
     sDate: string;
     eDate: string;
-    productCode: number;
+    productCode: string;
   }) => {
-    console.log(sDate, eDate, productCode);
-
     const bookingData: PolygonIdMetadata<BookHotelRequest> = {
       ...initBookHotel,
       credentialSubject: {
         id: userId,
         hotelName: "hi",
-        checkIn: sDate,
-        checkOut: eDate,
-        supplierNumber: 21,
-        supplierProductNumber: productCode,
+        checkIn: dayjs(sDate).format("YYYY-MM-DD"),
+        checkOut: dayjs(eDate).format("YYYY-MM-DD"),
+        supplierNumber: 21 ?? 0,
+        supplierProductCode: productCode,
+
         supplierProductType: "hi",
       },
 
-      expiration: endDate,
+      expiration: dayjs(eDate).toISOString(),
     };
 
     try {
@@ -100,13 +105,7 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
 
   return (
     <Box p={4} borderRadius={3} height={600} width={900}>
-      <Grid
-        container
-        gap={1}
-        direction="column"
-        justifyContent="center"
-        height="100%"
-      >
+      <Grid container gap={1} direction="column" height="100%">
         <Grid
           container
           item
@@ -123,11 +122,12 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
               value={supplier}
               onChange={(e) => setSupplier(e.target.value)}
             >
-              <MenuItem value="t-kopernikus14e2psc7uxz83fhrmfh52aynfh96vaacq2s92u0">
-                AVRA
-              </MenuItem>
               <MenuItem value="t-kopernikus1xpglq9kzg8pls6hyuhr39xuerqgxakr9dsp3k2">
                 MTS
+              </MenuItem>
+
+              <MenuItem value="t-kopernikus14e2psc7uxz83fhrmfh52aynfh96vaacq2s92u0">
+                AVRA
               </MenuItem>
             </TextField>
           </Grid>
@@ -153,13 +153,14 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
           </Grid>
 
           <Grid item>
-            <Button
+            <LoadingButton
               variant="contained"
               size="large"
               onClick={() => handleSearch()}
+              loading={loading}
             >
               Search
-            </Button>
+            </LoadingButton>
           </Grid>
         </Grid>
       </Grid>
@@ -169,14 +170,14 @@ export default function BookHotel({ userId, setUserId }: BookHotelProps) {
           products.map((result) => {
             return (
               <ResultCard
-                handleSubmit={(productCode: number) =>
+                handleSubmit={(productCode: string) =>
                   handleSubmit({
                     productCode,
                     sDate: startDate,
                     eDate: endDate,
                   })
                 }
-                roomNumber={result.unitsList[0].supplierRoomCode}
+                supplierRoomCode={result.unitsList[0].supplierRoomCode}
                 roomName={result.unitsList[0].supplierRoomName}
                 remainingUnits={result.unitsList[0].remainingUnits}
               />
